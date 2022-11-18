@@ -62,8 +62,8 @@
                             <p:column headerText="Adresse" sortBy="#{ecole.ecoleAdresse}">
                                 <h:outputText value="#{ecole.ecoleAdresse}" />
                             </p:column>
-                            <p:column headerText="Département" sortBy="#{ecole.ecoleAdresse.ville.departement}">
-                                <h:outputText value="#{ecole.ecoleAdresse.ville.departement}" />
+                            <p:column headerText="Département" sortBy="#{ecole.ecoleAdresse.ville.departementObject}">
+                                <h:outputText value="#{ecole.ecoleAdresse.ville.departementObject}" />
                             </p:column>
                             <p:column headerText="Ville" sortBy="#{ecole.ecoleAdresse.ville}">
                                 <h:outputText value="#{ecole.ecoleAdresse.ville}" />
@@ -100,26 +100,33 @@
                                         <p:ajax event="keyup" update="adresseCombo" listener="#{ecoleBean.refreshAdresseList}"/>
                                     </p:inputText>
 
-                                    <p:selectOneMenu id="adresseCombo" value="#{ecoleBean.selectedEcole.ecoleAdresse}" effect="fade" required="true">
+                                    <p:selectOneMenu id="adresseCombo" value="#{ecoleBean.selectedEcole.ecoleAdresse}" effect="fade" required="true" inputmode="trueh,">
                                         <f:selectItems value="#{ecoleBean.adresseList}" var="address" itemLabel="#{address.adresseLibelle}" itemValue="#{address.adresseId}"/>
                                     </p:selectOneMenu>
 
                                     <div class="field">
                                         <p:outputLabel for="name">Département</p:outputLabel>
 
-                                        <p:selectOneMenu id="departementCombo" value="#{ecoleBean.selectedEcole.ecoleAdresse.ville.departement}" effect="fade" required="true">
+                                        <p:selectOneMenu id="departementCombo" value="#{ecoleBean.departementId}" effect="fade" required="true">
                                             <f:selectItems value="#{ecoleBean.departementList}" var="departement" itemLabel="#{departement.departementLibelle}" itemValue="#{departement.departementId}"/>
+                                            <p:ajax event="valueChange" update="villeCombo" listener="#{ecoleBean.refreshVilleList}"/>
                                         </p:selectOneMenu>
                                     </div>
-                                    <div class="field">
-                                        <p:outputLabel for="name">Ville</p:outputLabel>
-                                        <p:inputText id="ville" value="#{ecoleBean.selectedEcole.ecoleAdresse.ville}" required="true" />
-                                    </div>
+
+                                    <p:outputLabel for="ville">Ville</p:outputLabel>
+
+                                    <p:inputText id="ville" value="#{ecoleBean.query}" >
+                                        <p:ajax event="keyup" update="villeCombo" listener="#{ecoleBean.refreshVilleListWithQuery}"/>
+                                    </p:inputText>
+
+                                    <p:selectOneMenu id="villeCombo" value="#{ecoleBean.selectedEcole.ecoleAdresse.ville}" effect="fade" required="true">
+                                        <f:selectItems value="#{ecoleBean.villeList}" var="ville" itemLabel="#{ville.villeLibelle}" itemValue="#{ville.villeId}"/>
+                                    </p:selectOneMenu>
                                 </p:outputPanel>
                             </p:outputPanel>
 
                             <f:facet name="footer">
-                                <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{ecoleBean.saveEcole()}"
+                                <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{ecoleBean.saveEcole}"
                                                  update=":form:dt-ecole" process="manage-ecole-content @this" />
                                 <p:commandButton value="Annuler" icon="pi pi-times" onclick="PF('manageEcoleDialog').hide()"
                                                  class="ui-button-secondary" type="button" />

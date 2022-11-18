@@ -4,6 +4,7 @@ import fr.kyo.crkf_web.dao.DAOFactory;
 import fr.kyo.crkf_web.entity.Adresse;
 import fr.kyo.crkf_web.entity.Departement;
 import fr.kyo.crkf_web.entity.Ecole;
+import fr.kyo.crkf_web.entity.Ville;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -22,12 +23,15 @@ public class EcoleBean implements Serializable {
     private transient List<Ecole> selectedEcoles;
     private transient List<Adresse> adresseList;
     private transient List<Departement> departementList;
+    private transient List<Ville> villeList;
+    private int departementId;
     private String query;
 
     @PostConstruct
     private void init(){
         allEcole = DAOFactory.getEcoleDAO().getAll(0);
         adresseList = DAOFactory.getAdresseDAO().getLike("");
+        villeList = DAOFactory.getVilleDAO().getLike("", 0);
         departementList = DAOFactory.getDepartementDAO().getAll(0);
     }
 
@@ -36,6 +40,13 @@ public class EcoleBean implements Serializable {
     }
     public void refreshAdresseList(){
         adresseList = DAOFactory.getAdresseDAO().getLike(query);
+    }
+    public void refreshVilleListWithQuery(){
+        villeList = DAOFactory.getVilleDAO().getLike(query, departementId);
+    }
+    public void refreshVilleList(){
+        villeList = DAOFactory.getVilleDAO().getByDepartement(departementId);
+        System.out.println(selectedEcole.getEcoleAdresse().getVille().getDepartementId());
     }
 
     public void newEcole() {
@@ -148,5 +159,21 @@ public class EcoleBean implements Serializable {
 
     public void setDepartementList(List<Departement> departementList) {
         this.departementList = departementList;
+    }
+
+    public List<Ville> getVilleList() {
+        return villeList;
+    }
+
+    public void setVilleList(List<Ville> villeList) {
+        this.villeList = villeList;
+    }
+
+    public int getDepartementId() {
+        return departementId;
+    }
+
+    public void setDepartementId(int departementId) {
+        this.departementId = departementId;
     }
 }

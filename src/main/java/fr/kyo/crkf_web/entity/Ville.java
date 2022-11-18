@@ -46,15 +46,16 @@ public class Ville {
         this.latitude = latitude;
     }
 
-    public Departement getDepartement() {
+    public int getDepartementId() {
+        return departementId;
+    }
+
+    public Departement getDepartementObject() {
         return DAOFactory.getDepartementDAO().getByID(departementId);
     }
 
-    public void setDepartementId(Departement departementId) {
-        this.departementId = departementId.getDepartementId();
-    }
 
-    public void setDepartement(int departement) {
+    public void setDepartementId(int departement) {
         this.departementId = departement;
     }
 

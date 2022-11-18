@@ -48,7 +48,7 @@ public class VilleDAO extends DAO<Ville> {
             preparedStatement.setString( 1 , objet.getVilleLibelle());
             preparedStatement.setFloat(2,objet.getLongitude());
             preparedStatement.setFloat(3,objet.getLatitude());
-            preparedStatement.setInt(4, objet.getDepartement().getDepartementId());
+            preparedStatement.setInt(4, objet.getDepartementObject().getDepartementId());
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if(rs.next()) return rs.getInt(1);
@@ -71,7 +71,7 @@ public class VilleDAO extends DAO<Ville> {
             preparedStatement.setString(1, object.getVilleLibelle());
             preparedStatement.setFloat(2,object.getLongitude());
             preparedStatement.setFloat(3,object.getLatitude());
-            preparedStatement.setInt(4, object.getDepartement().getDepartementId());
+            preparedStatement.setInt(4, object.getDepartementObject().getDepartementId());
             preparedStatement.setInt(5, object.getVilleId());
             preparedStatement.executeUpdate();
             connection.commit();
@@ -110,6 +110,15 @@ public class VilleDAO extends DAO<Ville> {
         StringBuilder requete = new StringBuilder("SELECT id_ville, ville, longitude,latitude,id_departement from Ville where ville like '%" + nom + "%'");
         if(departementId != 0)
             requete.append(" and id_departement = ").append(departementId);
+        requete.append(" ORDER BY VILLE OFFSET 0 ROWS FETCH NEXT 25 ROWS ONLY");
+        return getVilles(list, requete);
+    }
+
+    public List<Ville> getByDepartement(int departementId) {
+        List<Ville> list = new ArrayList<>();
+        StringBuilder requete = new StringBuilder("SELECT id_ville, ville, longitude,latitude,id_departement from Ville where ");
+        if(departementId != 0)
+            requete.append(" id_departement = ").append(departementId);
         requete.append(" ORDER BY VILLE OFFSET 0 ROWS FETCH NEXT 25 ROWS ONLY");
         return getVilles(list, requete);
     }
